@@ -1,0 +1,9 @@
+{
+  "candidates": [
+    {
+      "name": "echo-smoke",
+      "type": "echo",
+      "prefix": "SMOKE: "
+    }
+  ]
+}

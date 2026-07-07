@@ -1,0 +1,20 @@
+[project]
+name = "hexapla"
+version = "0.1.0"
+description = "Hexapla benchmark harness for Stage 4 Measure and Stage 5 Gate evidence."
+requires-python = ">=3.11"
+dependencies = [
+  "openai>=1.0.0",
+  "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
