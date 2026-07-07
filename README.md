@@ -1,5 +1,9 @@
 # Hexapla
 
+<p align="center">
+  <img src="assets/hexapla-logo.png" alt="Hexapla logo" width="360">
+</p>
+
 Private working repo for an early-stage evaluation harness.
 
 The current code focuses on a repeatable benchmark runner:
