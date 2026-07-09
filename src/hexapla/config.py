@@ -21,10 +21,10 @@ class Config:
         )
     )
     site_header: str = field(
-        default_factory=lambda: os.getenv("OPENROUTER_SITE", "https://github.com/cclawton/react-harness")
+        default_factory=lambda: os.getenv("OPENROUTER_SITE", "https://github.com/cclawton/hexapla")
     )
     app_name: str = field(
-        default_factory=lambda: os.getenv("OPENROUTER_APP_NAME", "react-harness")
+        default_factory=lambda: os.getenv("OPENROUTER_APP_NAME", "hexapla")
     )
 
     # Models

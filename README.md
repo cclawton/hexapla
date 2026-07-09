@@ -4,7 +4,7 @@
   <img src="assets/hexapla-logo.png" alt="Hexapla logo" width="360">
 </p>
 
-Private working repo for an early-stage evaluation harness.
+Early-stage evaluation harness for repeatable benchmark runs and result matrices.
 
 The current code focuses on a repeatable benchmark runner:
 
