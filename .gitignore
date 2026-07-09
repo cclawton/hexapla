@@ -3,5 +3,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+.hermes/
 benchmarks/results/*.json
 benchmarks/results/*.csv
