@@ -16,6 +16,7 @@ from typing import Callable
 
 from .contamination import screen_contamination
 from .matrix import EvaluationMatrix, MatrixResult
+from .schema import validate_eval_item, validate_eval_set
 from .scoring import ScoreResult, VerifierBackend, score_item
 from .sut_contract import SystemUnderTest
 
@@ -33,8 +34,8 @@ class BenchmarkConfig:
     contamination_threshold: float = 0.2
 
 
-def load_eval_set(path: str | Path) -> list[dict]:
-    """Load a Concordance eval set from JSONL."""
+def load_eval_set(path: str | Path, *, strict: bool = False) -> list[dict]:
+    """Load and validate a Concordance eval set from JSONL."""
 
     eval_path = Path(path)
     items: list[dict] = []
@@ -45,11 +46,9 @@ def load_eval_set(path: str | Path) -> list[dict]:
             item = json.loads(line)
         except json.JSONDecodeError as exc:
             raise ValueError(f"Invalid JSON on line {line_number}: {exc}") from exc
-        if "id" not in item:
-            raise ValueError(f"Eval item on line {line_number} must include 'id'")
-        if "prompt" not in item:
-            raise ValueError(f"Eval item on line {line_number} must include 'prompt'")
+        validate_eval_item(item, strict=strict, label=f"line {line_number}")
         items.append(item)
+    validate_eval_set(items, strict=strict)
     return items
 
 

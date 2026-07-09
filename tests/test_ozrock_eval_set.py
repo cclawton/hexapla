@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from hexapla.schema import validate_eval_set
+
 
 OZROCK_DIR = Path("benchmarks/ozrock")
 
@@ -19,6 +21,7 @@ def test_ozrock_benchmark_bundle_files_exist():
 
 def test_ozrock_eval_set_has_five_source_linked_items_with_unique_ids():
     items = _load_jsonl(OZROCK_DIR / "eval_set.jsonl")
+    validate_eval_set(items, strict=True)
 
     assert len(items) >= 5
     ids = [item["id"] for item in items]
