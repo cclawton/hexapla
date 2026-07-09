@@ -10,6 +10,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0.0"]
+inspect = ["inspect-ai>=0.3.245"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

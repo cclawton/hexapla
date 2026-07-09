@@ -5,11 +5,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from hexapla.backend import Backend
-from hexapla.benchmark_loop import BenchmarkConfig, run_benchmark
+from hexapla.benchmark_loop import BenchmarkConfig, load_eval_set, run_benchmark
 from hexapla.config import Config
+from hexapla.inspect_adapter import build_inspect_task_source, export_inspect_jsonl, to_inspect_samples
 from hexapla.scoring import ScoreResult
 from hexapla.sut_contract import load_sut_contract
 
@@ -19,8 +21,19 @@ def _load_contract(path: Path) -> dict:
     return json.loads(text)
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == "export-inspect":
+        parser = argparse.ArgumentParser(description="Export Hexapla eval items for Inspect AI.")
+        parser.add_argument("command", choices=["export-inspect"])
+        parser.add_argument("--eval-set", required=True, type=Path, help="Canonical Hexapla eval set JSONL")
+        parser.add_argument("--rubric", required=True, type=Path, help="Scoring rubric markdown")
+        parser.add_argument("--task-name", required=True, help="Inspect task function name, e.g. ozrock")
+        parser.add_argument("--output-dir", required=True, type=Path, help="Directory for Inspect artefacts")
+        return parser.parse_args(argv)
+
     parser = argparse.ArgumentParser(description="Run a Hexapla Stage 4 benchmark.")
+    parser.set_defaults(command="run")
     parser.add_argument("--eval-set", required=True, type=Path, help="Concordance eval set JSONL")
     parser.add_argument("--rubric", required=True, type=Path, help="Scoring rubric markdown")
     parser.add_argument("--sut-contract", required=True, type=Path, help="SUT contract JSON")
@@ -36,11 +49,36 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Use deterministic score=1 scorer for no-network CLI smoke tests",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
+
+
+def export_inspect(args: argparse.Namespace) -> tuple[Path, Path]:
+    """Export canonical Hexapla eval items into Inspect-compatible artefacts."""
+
+    items = load_eval_set(args.eval_set, strict=True)
+    samples = to_inspect_samples(items)
+    samples_path = args.output_dir / "inspect_samples.jsonl"
+    task_path = args.output_dir / "inspect_task.py"
+    export_inspect_jsonl(samples, samples_path)
+    task_path.write_text(
+        build_inspect_task_source(
+            task_name=args.task_name,
+            dataset_path=str(samples_path),
+            rubric_path=str(args.rubric),
+        ),
+        encoding="utf-8",
+    )
+    return samples_path, task_path
 
 
 def main() -> int:
     args = parse_args()
+    if args.command == "export-inspect":
+        samples_path, task_path = export_inspect(args)
+        print(f"Wrote {samples_path}")
+        print(f"Wrote {task_path}")
+        return 0
+
     config = Config()
     verifier_model = args.verifier_model or config.verifier_model
     contract = _load_contract(args.sut_contract)
