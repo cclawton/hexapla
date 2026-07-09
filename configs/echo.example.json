@@ -1,0 +1,9 @@
+{
+  "candidates": [
+    {
+      "name": "echo-baseline",
+      "type": "echo",
+      "prefix": ""
+    }
+  ]
+}
