@@ -58,5 +58,6 @@ def test_build_inspect_task_source_contains_task_dataset_and_scorer_names():
     assert "from inspect_ai import Task, task" in source
     assert "json_dataset" in source
     assert "model_graded_qa" in source
-    assert "benchmarks/ozrock/inspect_samples.jsonl" in source
-    assert "benchmarks/ozrock/rubric.md" in source
+    assert "_TASK_DIR" in source
+    assert "inspect_samples.jsonl" in source
+    assert "rubric.md" in source

@@ -56,21 +56,29 @@ def build_inspect_task_source(task_name: str, dataset_path: str, rubric_path: st
     return f'''"""Inspect AI task spike for the {task_name} Hexapla benchmark.
 
 Run after installing Inspect AI, for example:
-    inspect eval benchmarks/{task_name}/inspect_task.py --model openai/gpt-4o-mini
+    inspect eval benchmarks/{task_name}/inspect_task.py --model openrouter/openai/gpt-4o-mini
 """
+
+from pathlib import Path
 
 from inspect_ai import Task, task
 from inspect_ai.dataset import json_dataset
 from inspect_ai.scorer import model_graded_qa
 from inspect_ai.solver import generate
 
+_TASK_DIR = Path(__file__).resolve().parent
+
 
 @task
 def {task_name}():
-    rubric = open("{rubric_path}", encoding="utf-8").read()
+    rubric = (_TASK_DIR / "{Path(rubric_path).name}").read_text(encoding="utf-8")
+    dataset_path = _TASK_DIR / "{Path(dataset_path).name}"
     return Task(
-        dataset=json_dataset("{dataset_path}"),
+        dataset=json_dataset(str(dataset_path)),
         solver=generate(),
-        scorer=model_graded_qa(template=rubric),
+        scorer=model_graded_qa(
+            instructions=rubric,
+            partial_credit=True,
+        ),
     )
 '''

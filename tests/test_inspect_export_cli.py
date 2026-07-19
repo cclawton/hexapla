@@ -68,6 +68,7 @@ def test_main_benchmark_export_inspect_writes_samples_and_task(tmp_path: Path):
     assert rows[0]["target"] == "The Band"
     task_source = task_path.read_text(encoding="utf-8")
     assert "def ozrock" in task_source
-    assert str(samples_path) in task_source
-    assert str(rubric_path) in task_source
+    assert "inspect_samples.jsonl" in task_source
+    assert "rubric.md" in task_source
+    assert "_TASK_DIR" in task_source
     assert "Wrote" in result.stdout
