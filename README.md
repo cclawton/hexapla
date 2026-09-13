@@ -15,7 +15,7 @@ The current code focuses on a repeatable benchmark runner:
 - optionally run simple perturbation checks
 - write versioned JSON and CSV result matrices
 
-The project is intentionally small and experimental for now. Public positioning, domain framing, and contribution language are deliberately omitted until the work is ready to describe more openly.
+The project is intentionally small and experimental for now. Public positioning and domain framing live at [hexapla.dev](https://hexapla.dev); this repo stays focused on the harness code and is not the place for manifesto or contribution language.
 
 ## Smoke test
 
